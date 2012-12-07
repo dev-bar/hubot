@@ -1,1 +1,1 @@
-app: bin/hubot -a campfire -n "Yeti Bot"
+app: bin/hubot -a campfire -n "Waveya"
