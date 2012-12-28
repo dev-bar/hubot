@@ -16,15 +16,9 @@
 #   gtoroap
 
 odeskUrl = 'https://www.odesk.com/api/profiles/v1/search/jobs.json'
-confVars = (msg) ->
-  condition = process.env.HUBOT_BITLY_USERNAME && process.env.HUBOT_BITLY_API_KEY
-  unless condition
-    msg.send 'Please set environment variables'
-    false
 
 module.exports = (robot) ->
   robot.respond /odesk me (.*)$/i, (msg) ->
-    return unless confVars(msg)
     msg.http(odeskUrl)
       .query({
         q: msg.match[1]
@@ -34,7 +28,6 @@ module.exports = (robot) ->
         renderBody msg, body
 
   robot.respond /odesk_best me (.*)$/i, (msg) ->
-    return unless confVars(msg)
     msg.http(odeskUrl)
       .query({
         q: msg.match[1]
@@ -64,8 +57,8 @@ daysAgo = (days)->
 shortenUrl = (msg, job, url) ->
   msg.http("http://api.bitly.com/v3/shorten")
     .query({
-      login: process.env.HUBOT_BITLY_USERNAME
-      apiKey: process.env.HUBOT_BITLY_API_KEY
+      login: 'gtoroap' #process.env.HUBOT_BITLY_USERNAME
+      apiKey: 'R_4a099fcba171cb20d72150dcc9077191' #process.env.HUBOT_BITLY_API_KEY
       longUrl: url
     })
     .get() (err, res, body) ->
