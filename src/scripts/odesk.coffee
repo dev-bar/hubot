@@ -7,10 +7,11 @@
 # Configuration:
 #   HUBOT_BITLY_USERNAME
 #   HUBOT_BITLY_API_KEY
+#   (preferred but not required)
 #
 # Commands:
-#   hubot odesk me <keywords>
-#   hubot odesk_best me <keywords>
+#   hubot odesk|offer me <keywords> - Get most recent jobs from oDesk filtered by keywords
+#   hubot best odesk|offer me <keywords> - Get most recent dream jobs from oDesk filtered by keywords
 #
 # Author:
 #   gtoroap
@@ -18,23 +19,23 @@
 odeskUrl = 'https://www.odesk.com/api/profiles/v1/search/jobs.json'
 
 module.exports = (robot) ->
-  robot.respond /odesk me (.*)$/i, (msg) ->
+  robot.respond /(offer|odesk)( me)? (.*)/i, (msg) ->
     msg.http(odeskUrl)
       .query({
-        q: msg.match[1]
+        q: msg.match[3]
         page: '0;5'
       })
       .get() (err, res, body) ->
         renderBody msg, body
 
-  robot.respond /odesk_best me (.*)$/i, (msg) ->
+  robot.respond /best (offer|odesk)( me)? (.*)$/i, (msg) ->
     msg.http(odeskUrl)
       .query({
-        q: msg.match[1]
+        q: msg.match[3]
         t: 'Hourly'
         page: '0;5'
         fb: 4
-        tba: 3
+        tba: 5
         wl: '40'
         dur: '26'
         dp: daysAgo(7)
@@ -46,7 +47,10 @@ renderBody = (msg, body) ->
   try
     results = JSON.parse(body)['jobs']['job']
     for job in results
-      shortenUrl msg, job, "https://www.odesk.com/o/jobs/job/#{job['legacy_ciphertext']}"
+      if process.env.HUBOT_BITLY_USERNAME && process.env.HUBOT_BITLY_API_KEY
+        shortenUrl msg, job, "https://www.odesk.com/o/jobs/job/#{job['legacy_ciphertext']}"
+      else
+        msg.send "#{job['op_title']} \n https://www.odesk.com/o/jobs/job/#{job['legacy_ciphertext']}"
   catch error
     msg.send "Sorry, jobs not found. Please check your keywords spelling and try it again."
 
@@ -65,4 +69,3 @@ shortenUrl = (msg, job, url) ->
       response = JSON.parse(body)
       url = response['data']['url']
       msg.send "#{job['op_title']} => #{url}"
-
