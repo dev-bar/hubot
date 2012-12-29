@@ -11,6 +11,8 @@
 #   hubot time in <city> - Get current time in city
 #
 # Notes
+#   Request an API KEY in http://www.worldweatheronline.com/
+#
 #   City parameter can be:
 #     city
 #     city, country
