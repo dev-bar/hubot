@@ -24,6 +24,9 @@
 #
 module.exports = (robot) ->
   robot.respond /time in (.*)/i, (msg) ->
+    unless process.env.HUBOT_WWO_API_KEY
+      msg.send 'Please, set HUBOT_WWO_API_KEY environment variable'
+      return
     msg.http('http://www.worldweatheronline.com/feed/tz.ashx')
       .query({
         q: msg.match[1]
