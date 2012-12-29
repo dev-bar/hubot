@@ -25,11 +25,14 @@ module.exports = (robot) ->
     msg.http('http://www.worldweatheronline.com/feed/tz.ashx')
       .query({
         q: msg.match[1]
-        key: '4e7947013a111525122912' #process.env.HUBOT_WWO_API_KEY
+        key: process.env.HUBOT_WWO_API_KEY
         format: 'json'
       })
       .get() (err, res, body) ->
-        result = JSON.parse(body)['data']
-        city = result['request'][0]['query']
-        currentTime = result['time_zone'][0]['localtime'].slice 11
-        msg.send "Current time in #{city} ==> #{currentTime}"
+        try
+          result = JSON.parse(body)['data']
+          city = result['request'][0]['query']
+          currentTime = result['time_zone'][0]['localtime'].slice 11
+          msg.send "Current time in #{city} ==> #{currentTime}"
+        catch error
+          msg.send "Sorry, no city found. Please, check your input and try it again"
