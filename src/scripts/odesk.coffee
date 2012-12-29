@@ -13,6 +13,9 @@
 #   hubot odesk|offer me <keywords> - Get most recent jobs from oDesk filtered by keywords
 #   hubot best odesk|offer me <keywords> - Get most recent dream jobs from oDesk filtered by keywords
 #
+# Notes:
+#   Bitly environment variables are not required but preferred in order to shorten URLs
+#
 # Author:
 #   gtoroap
 
